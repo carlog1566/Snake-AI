@@ -1,4 +1,5 @@
 import pygame
+import random
 from sys import exit
 
 # DEFINE CONSTANTS
@@ -18,6 +19,10 @@ snake_size = [[200, 200],
 # DEFINE DIRECTION FOR PLAYER INPUT (change_direction used as a buffer so that the computer doesn't freak out when it detects fast inputs)
 direction = "RIGHT"
 change_direction = direction
+
+# DEFINE APPLE POSITION AND BOOL TO SPAWN APPLE
+apple_position = [random.randrange(0, WINDOW_WIDTH, BLOCK_SIZE), random.randrange(0, WINDOW_HEIGHT, BLOCK_SIZE)]
+spawn_apple = False
 
 # PYGAME ESSENTIALS
 pygame.init()
@@ -77,6 +82,11 @@ while True:
         snake_size.insert(0, list(snake_position))
         snake_size.pop()
 
+        # USED TO CREATE A NEW POSITION FOR APPLE
+        if not spawn_apple:
+            apple_position = [random.randrange(0, WINDOW_WIDTH, BLOCK_SIZE), random.randrange(0, WINDOW_HEIGHT, BLOCK_SIZE)]
+
+        spawn_apple = True
         screen.fill('Black')
         drawGrid()
 
@@ -84,6 +94,10 @@ while True:
         for pos in snake_size:
             snake_rect = pygame.Rect((pos[0], pos[1]), (BLOCK_SIZE, BLOCK_SIZE))
             pygame.draw.rect(screen, 'Green', snake_rect)
+
+        # DRAWS APPLE IN FRAME
+        apple_rect = pygame.Rect((apple_position[0], apple_position[1]), (BLOCK_SIZE, BLOCK_SIZE))
+        pygame.draw.rect(screen, 'Red', apple_rect)
     
     pygame.display.update()
     clock.tick(10)
