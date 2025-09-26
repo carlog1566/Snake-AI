@@ -58,7 +58,6 @@ while True:
                 change_direction = "RIGHT"
 
     if game_active:
-        
         # DIRECTION VAR BUFFER
         if change_direction == "UP" and direction != "DOWN":
             direction = "UP"
@@ -79,8 +78,12 @@ while True:
         if direction == "LEFT":
             snake_position[0] -= 20
 
+        # DETECTS SNAKE AND APPLE COLLISION AND GROWS THE SNAKE OR WHEN ONE DOESN'T HAPPEN WHERE IT THEN POPS TO KEEP THE SNAKE THE SAME LENGTH
         snake_size.insert(0, list(snake_position))
-        snake_size.pop()
+        if snake_position[0] == apple_position[0] and snake_position[1] == apple_position[1]:
+            spawn_apple = False
+        else:
+            snake_size.pop()
 
         # USED TO CREATE A NEW POSITION FOR APPLE WITHOUT IT SPAWNING INSIDE THE SNAKE
         if not spawn_apple:
