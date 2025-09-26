@@ -7,6 +7,18 @@ WINDOW_WIDTH = 800
 PLAYER_START_POS = 200
 BLOCK_SIZE = 20
 
+# DEFINE SNAKE POSITION AND STARTING SIZE
+snake_position = [PLAYER_START_POS, PLAYER_START_POS]
+snake_size = [[200, 200],
+              [180, 200],
+              [160, 200],
+              [140, 200]
+              ]
+
+# DEFINE DIRECTION FOR PLAYER INPUT (change_direction used as a buffer so that the computer doesn't freak out when it detects fast inputs)
+direction = "RIGHT"
+change_direction = direction
+
 # PYGAME ESSENTIALS
 pygame.init()
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -29,8 +41,49 @@ while True:
             pygame.quit()
             exit()
 
-    screen.fill('Black')
-    drawGrid()
+        # PLAYER INPUT
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_w:
+                change_direction = "UP"
+            elif event.key == pygame.K_s:
+                change_direction = "DOWN"
+            elif event.key == pygame.K_a:
+                change_direction = "LEFT"
+            elif event.key == pygame.K_d:
+                change_direction = "RIGHT"
+
+    if game_active:
+        
+        # DIRECTION VAR BUFFER
+        if change_direction == "UP" and direction != "DOWN":
+            direction = "UP"
+        if change_direction == "DOWN" and direction != "UP":
+            direction = "DOWN"
+        if change_direction == "RIGHT" and direction != "LEFT":
+            direction = "RIGHT"
+        if change_direction == "LEFT" and direction != "RIGHT":
+            direction = "LEFT"
+
+        # CHANGE IN SNAKE POSITION BASED ON DIRECTION
+        if direction == "UP":
+            snake_position[1] -= 20
+        if direction == "DOWN":
+            snake_position[1] += 20
+        if direction == "RIGHT":
+            snake_position[0] += 20
+        if direction == "LEFT":
+            snake_position[0] -= 20
+
+        snake_size.insert(0, list(snake_position))
+        snake_size.pop()
+
+        screen.fill('Black')
+        drawGrid()
+
+        # DRAWS SNAKE IN FRAME
+        for pos in snake_size:
+            snake_rect = pygame.Rect((pos[0], pos[1]), (BLOCK_SIZE, BLOCK_SIZE))
+            pygame.draw.rect(screen, 'Green', snake_rect)
     
     pygame.display.update()
     clock.tick(10)
