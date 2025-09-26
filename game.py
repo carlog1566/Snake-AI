@@ -77,7 +77,7 @@ while True:
             snake_position[0] += 20
         if direction == "LEFT":
             snake_position[0] -= 20
-
+        
         # DETECTS SNAKE AND APPLE COLLISION AND GROWS THE SNAKE OR WHEN ONE DOESN'T HAPPEN WHERE IT THEN POPS TO KEEP THE SNAKE THE SAME LENGTH
         snake_size.insert(0, list(snake_position))
         if snake_position[0] == apple_position[0] and snake_position[1] == apple_position[1]:
@@ -94,7 +94,8 @@ while True:
                     if pos != apple_position:
                         not_colliding = True
                         break
-
+        
+        # RESET FRAME
         spawn_apple = True
         screen.fill('Black')
         drawGrid()
@@ -103,10 +104,18 @@ while True:
         for pos in snake_size:
             snake_rect = pygame.Rect((pos[0], pos[1]), (BLOCK_SIZE, BLOCK_SIZE))
             pygame.draw.rect(screen, 'Green', snake_rect)
-
+            
         # DRAWS APPLE IN FRAME
         apple_rect = pygame.Rect((apple_position[0], apple_position[1]), (BLOCK_SIZE, BLOCK_SIZE))
         pygame.draw.rect(screen, 'Red', apple_rect)
-    
+
+        # DETECTS GAME OVER WHEN SNAKE IS OUT OF BOUNDS OR WHEN IT COLLIDES WITH ITSELF
+        if (snake_position[0] < 0 or snake_position[1] < 0) or (snake_position[0] > WINDOW_WIDTH - 20 or snake_position[1] > WINDOW_HEIGHT - 20):
+            game_active = False
+        
+        for pos in snake_size[1:]:
+            if snake_position[0] == pos[0] and snake_position[1] == pos[1]:
+                game_active = False
+
     pygame.display.update()
     clock.tick(10)
