@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# PyTorch / TensorFlow model files
+*.pt
+*.pth
+*.h5
+*.ckpt
+
+# Data files (optional – keep if small demo data is okay)
+*.csv
+*.npz
+*.npy
+*.pickle
+*.pkl
+
+# Logs
+*.log
+logs/
+wandb/
+runs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/project files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
