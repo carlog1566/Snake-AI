@@ -82,9 +82,15 @@ while True:
         snake_size.insert(0, list(snake_position))
         snake_size.pop()
 
-        # USED TO CREATE A NEW POSITION FOR APPLE
+        # USED TO CREATE A NEW POSITION FOR APPLE WITHOUT IT SPAWNING INSIDE THE SNAKE
         if not spawn_apple:
-            apple_position = [random.randrange(0, WINDOW_WIDTH, BLOCK_SIZE), random.randrange(0, WINDOW_HEIGHT, BLOCK_SIZE)]
+            not_colliding = False
+            while not not_colliding:
+                for pos in snake_size:
+                    apple_position = [random.randrange(0, WINDOW_WIDTH, BLOCK_SIZE), random.randrange(0, WINDOW_HEIGHT, BLOCK_SIZE)]
+                    if pos != apple_position:
+                        not_colliding = True
+                        break
 
         spawn_apple = True
         screen.fill('Black')
