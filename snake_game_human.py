@@ -99,11 +99,10 @@ while True:
         if not spawn_apple:
             not_colliding = False
             while not not_colliding:
-                for pos in snake_size:
-                    apple_position = [random.randrange(0, GAME_WIDTH, BLOCK_SIZE), random.randrange(GAME_HEIGHT_OFFSET, GAME_HEIGHT, BLOCK_SIZE)]
-                    if pos != apple_position:
-                        not_colliding = True
-                        break
+                apple_position = [random.randrange(0, GAME_WIDTH, BLOCK_SIZE), random.randrange(GAME_HEIGHT_OFFSET, GAME_HEIGHT, BLOCK_SIZE)]
+                if apple_position not in snake_position:
+                    not_colliding = True
+                    break
         
         # RESET FRAME
         spawn_apple = True
