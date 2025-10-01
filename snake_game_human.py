@@ -3,8 +3,11 @@ import random
 from sys import exit
 
 # DEFINE CONSTANTS
-WINDOW_HEIGHT = 800
+WINDOW_HEIGHT = 840
 WINDOW_WIDTH = 800
+GAME_HEIGHT = 840
+GAME_HEIGHT_OFFSET = 60
+GAME_WIDTH = 800
 PLAYER_START_POS = 200
 BLOCK_SIZE = 20
 
@@ -21,7 +24,7 @@ direction = "RIGHT"
 change_direction = direction
 
 # DEFINE APPLE POSITION AND BOOL TO SPAWN APPLE
-apple_position = [random.randrange(0, WINDOW_WIDTH, BLOCK_SIZE), random.randrange(0, WINDOW_HEIGHT, BLOCK_SIZE)]
+apple_position = [random.randrange(0, GAME_WIDTH, BLOCK_SIZE), random.randrange(GAME_HEIGHT_OFFSET, GAME_HEIGHT, BLOCK_SIZE)]
 spawn_apple = False
 
 # PYGAME ESSENTIALS
@@ -31,10 +34,14 @@ pygame.display.set_caption('Snake')
 clock = pygame.time.Clock()
 game_active = True
 
+# SCORE VARIABLE & FONT
+score = 0
+score_font = pygame.font.Font('resources/font/Pixeltype.ttf', 50)
+
 # GRID FOR AESTHETIC PURPOSES
 def drawGrid():
-    for x in range(0, WINDOW_WIDTH, BLOCK_SIZE):
-        for y in range(0, WINDOW_HEIGHT, BLOCK_SIZE):
+    for x in range(0, GAME_WIDTH, BLOCK_SIZE):
+        for y in range(GAME_HEIGHT_OFFSET, GAME_HEIGHT, BLOCK_SIZE):
             grid_rect = pygame.Rect(x, y, BLOCK_SIZE, BLOCK_SIZE)
             pygame.draw.rect(screen, 'gray9', grid_rect, 1)
 
@@ -82,15 +89,18 @@ while True:
         snake_size.insert(0, list(snake_position))
         if snake_position[0] == apple_position[0] and snake_position[1] == apple_position[1]:
             spawn_apple = False
+            score += 10
         else:
             snake_size.pop()
+        
+
 
         # USED TO CREATE A NEW POSITION FOR APPLE WITHOUT IT SPAWNING INSIDE THE SNAKE
         if not spawn_apple:
             not_colliding = False
             while not not_colliding:
                 for pos in snake_size:
-                    apple_position = [random.randrange(0, WINDOW_WIDTH, BLOCK_SIZE), random.randrange(0, WINDOW_HEIGHT, BLOCK_SIZE)]
+                    apple_position = [random.randrange(0, GAME_WIDTH, BLOCK_SIZE), random.randrange(GAME_HEIGHT_OFFSET, GAME_HEIGHT, BLOCK_SIZE)]
                     if pos != apple_position:
                         not_colliding = True
                         break
@@ -99,6 +109,8 @@ while True:
         spawn_apple = True
         screen.fill('Black')
         drawGrid()
+        score_text = score_font.render('Score: ' + str(score), True, (255, 255, 255))
+        screen.blit(score_text, (20, 20))
 
         # DRAWS SNAKE IN FRAME
         for pos in snake_size:
@@ -110,7 +122,7 @@ while True:
         pygame.draw.rect(screen, 'Red', apple_rect)
 
         # DETECTS GAME OVER WHEN SNAKE IS OUT OF BOUNDS OR WHEN IT COLLIDES WITH ITSELF
-        if (snake_position[0] < 0 or snake_position[1] < 0) or (snake_position[0] > WINDOW_WIDTH - 20 or snake_position[1] > WINDOW_HEIGHT - 20):
+        if (snake_position[0] < 0 or snake_position[1] < GAME_HEIGHT_OFFSET) or (snake_position[0] > GAME_WIDTH - 20 or snake_position[1] > GAME_HEIGHT - 20):
             game_active = False
         
         for pos in snake_size[1:]:
