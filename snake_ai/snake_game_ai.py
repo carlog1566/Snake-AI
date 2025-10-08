@@ -7,7 +7,7 @@ from collections import namedtuple
 
 # reset
 # reward
-# play(action) ->direction
+# play(action) -> direction
 # game iteration
 # collision
 
@@ -60,6 +60,7 @@ class SnakeGame():
         self.score = 0
         self.food = None
         self.place_food()
+        self.frame_iteration = 0
 
     # FOOD FUNCTION
     def place_food(self):
