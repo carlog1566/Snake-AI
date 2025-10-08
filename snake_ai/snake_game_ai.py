@@ -1,9 +1,11 @@
 import os
 import pygame
 import random
+import numpy as np
 from sys import exit
 from enum import Enum
 from collections import namedtuple
+
 
 # reset
 # reward
@@ -78,20 +80,9 @@ class SnakeGame():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-
-            # PLAYER INPUT
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w and self.direction != Direction.DOWN:
-                    self.direction = Direction.UP
-                elif event.key == pygame.K_s and self.direction != Direction.UP:
-                    self.direction = Direction.DOWN
-                elif event.key == pygame.K_a and self.direction != Direction.RIGHT:
-                    self.direction = Direction.LEFT
-                elif event.key == pygame.K_d and self.direction != Direction.LEFT:
-                    self.direction = Direction.RIGHT
         
         # MOVE SNAKE
-        self.move(self.direction)
+        self.move(action)
         self.snake.insert(0, self.head)
 
         # GAME OVER CONDITION WHEN A COLLISION HAPPENS
@@ -117,28 +108,47 @@ class SnakeGame():
         return reward, game_over, self.score
     
     # MOVE SYSTEM
-    def move(self, direction):
+    def move(self, action):
+        # [straight, right, left]
+
+        clock_wise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
+        index = clock_wise.index(self.direction)
+
+        if np.array_equal(action, [1, 0, 0]):
+            new_dir = clock_wise[index]
+        elif np.array_equal(action, [0, 1, 0]): # Makes a right turn (if moving right -> move down/moving left -> move up)
+            next_index = (index + 1) % 4
+            new_dir = clock_wise[next_index]
+        else: # Makes a left turn (if moving right -> move up/moving left -> move down)
+            next_index = (index -1) % 4
+            new_dir = clock_wise[next_index]
+
+        self.direction = new_dir
+
         x = self.head.x
         y = self.head.y
 
         # SNAKE MOVEMENT BASED ON DIRECTION
-        if direction == Direction.UP:
+        if self.direction == Direction.UP:
             y -= BLOCK_SIZE
-        if direction == Direction.DOWN:
+        if self.direction == Direction.DOWN:
             y += BLOCK_SIZE
-        if direction == Direction.RIGHT:
+        if self.direction == Direction.RIGHT:
             x += BLOCK_SIZE
-        if direction == Direction.LEFT:
+        if self.direction == Direction.LEFT:
             x -= BLOCK_SIZE
         
         self.head = Point(x, y)
 
     # COLLISION DETECTOR
-    def is_collision(self):
+    def is_collision(self, pt=None):
+        if pt is None:
+            pt = self.head
+
         # CHECKS COLLISION ON SELF OR BOUNDARIES
-        if (self.head.x < 0 or self.head.y < GAME_HEIGHT_OFFSET) or (self.head.x > GAME_WIDTH - 20 or self.head.y > GAME_HEIGHT - 20):
+        if (pt.x < 0 or pt.y < GAME_HEIGHT_OFFSET) or (pt.x > GAME_WIDTH - 20 or pt.y > GAME_HEIGHT - 20):
             return True
-        if self.head in self.snake[1:]:
+        if pt in self.snake[1:]:
             return True
         
         return False
@@ -167,18 +177,3 @@ class SnakeGame():
         self.display.blit(score_text, (20, 20))
 
         pygame.display.flip()
-
-
-if __name__ == '__main__':
-    game = SnakeGame()
-
-    while True:
-        game_over, score = game.play()
-
-        if game_over == True:
-            break
-    
-    print('Final Score:', score)
-
-    pygame.quit()
-    exit()
