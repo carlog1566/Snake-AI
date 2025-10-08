@@ -72,6 +72,7 @@ class SnakeGame():
             self.place_food()
     
     def play(self, action):
+        self.frame_iteration += 1
         for event in pygame.event.get():
             # QUIT EVENT
             if event.type == pygame.QUIT:
@@ -94,14 +95,17 @@ class SnakeGame():
         self.snake.insert(0, self.head)
 
         # GAME OVER CONDITION WHEN A COLLISION HAPPENS
+        reward = 0
         game_over = False
-        if self.is_collision():
+        if self.is_collision() or self.frame_iteration > (100 * len(self.snake)):
+            reward = -10
             game_over = True
-            return game_over, self.score
+            return reward, game_over, self.score
         
         # PLACES FOOD & INCREASES SCORE OR JUST MOVE
         if self.head == self.food:
             self.score += 10
+            reward = 10
             self.place_food()
         else:
             self.snake.pop()
@@ -110,7 +114,7 @@ class SnakeGame():
         self.update_frame()
         self.clock.tick(SPEED)
 
-        return game_over, self.score
+        return reward, game_over, self.score
     
     # MOVE SYSTEM
     def move(self, direction):
