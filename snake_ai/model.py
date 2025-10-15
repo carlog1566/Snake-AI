@@ -27,4 +27,44 @@ class Linear_QNet(nn.Module):
 
 
 class QTrainer:
-    pass
+    def __init__(self, model, learning_rate, gamma):
+        self.learning_rate = learning_rate
+        self.gamma = gamma
+        self.model = model
+        self.optimizer = optim.Adam(model.parameters(), learning_rate=self.learning_rate)
+        self.criterion = nn.MSELoss()
+
+    
+    def train_step(self, state, action, reward, next_state, game_over):
+        state = torch.tensor(state, dtype=torch.float)
+        next_state = torch.tensor(next_state, dtype=torch.float)
+        action = torch.tensor(action, dtype=torch.long)
+        reward = torch.tensor(reward, dtype=torch.float)
+
+        if len(state.shape) == 1:
+            state = torch.unsqueeze(state, 0)
+            next_state = torch.unsqueeze(next_state, 0)
+            action = torch.unsqueeze(action, 0)
+            reward = torch.unsqueeze(reward, 0)
+
+            game_over = (game_over, )
+
+        # PREDICT Q VALUES WITH CURRENT STATE
+        pred = self.model(state)
+
+        # Q_new = r + y * max(next_predicted Q value) (only do thsi if game is not over)
+        # pred.clone()
+        # preds[argmax(action)] = Q_new
+        target = pred.clone()
+        for idx in range(len(game_over)):
+            Q_new = reward[idx]
+            if not game_over[idx]:
+                Q_new = reward[idx] + self.gamme * torch.max(self.model(next_state[idx]))
+
+            target[idx][torch.argmax(action).item()] = Q_new
+        
+        self.optimizer.zero_grad()
+        loss = self.criterion(target, pred)
+        loss.backward()
+
+        self.optimizer.step()
