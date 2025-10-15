@@ -31,7 +31,7 @@ class QTrainer:
         self.learning_rate = learning_rate
         self.gamma = gamma
         self.model = model
-        self.optimizer = optim.Adam(model.parameters(), learning_rate=self.learning_rate)
+        self.optimizer = optim.Adam(model.parameters(), lr=self.learning_rate)
         self.criterion = nn.MSELoss()
 
     
@@ -59,7 +59,7 @@ class QTrainer:
         for idx in range(len(game_over)):
             Q_new = reward[idx]
             if not game_over[idx]:
-                Q_new = reward[idx] + self.gamme * torch.max(self.model(next_state[idx]))
+                Q_new = reward[idx] + self.gamma * torch.max(self.model(next_state[idx]))
 
             target[idx][torch.argmax(action).item()] = Q_new
         

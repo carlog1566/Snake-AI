@@ -31,7 +31,7 @@ GAME_HEIGHT = 860
 GAME_HEIGHT_OFFSET = 60
 GAME_WIDTH = 800
 BLOCK_SIZE = 20
-SPEED = 10
+speed = 10
 
 class SnakeGame():
 
@@ -74,12 +74,19 @@ class SnakeGame():
             self.place_food()
     
     def play(self, action):
+        global speed
         self.frame_iteration += 1
         for event in pygame.event.get():
             # QUIT EVENT
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    speed += 100
+                if event.key == pygame.K_r:
+                    speed = 10
         
         # MOVE SNAKE
         self.move(action)
@@ -103,7 +110,7 @@ class SnakeGame():
 
         # UPDATE UI AND DECLARE FRAME RATE
         self.update_frame()
-        self.clock.tick(SPEED)
+        self.clock.tick(speed)
 
         return reward, game_over, self.score
     

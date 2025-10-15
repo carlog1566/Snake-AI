@@ -113,7 +113,7 @@ def train():
 
     while True:
         # GET OLD STATE
-        state_old = Agent.get_state(game)
+        state_old = agent.get_state(game)
 
         # GET MOVE FROM OLD STATE
         final_move = agent.get_action(state_old)
