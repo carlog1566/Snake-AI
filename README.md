@@ -1,6 +1,6 @@
 # 🐍 Snake AI
 
-A Snake game built from scratch using Pygame, combined with a Reinforcement Learning AI implemented in PyTorch. The AI progressively learns to play Snake and improve its score over time.
+**A Snake game built from scratch using Pygame, combined with a Reinforcement Learning AI implemented in PyTorch. The AI progressively learns to play Snake and improve its score over time.**
 
 
 ## 🚀 Features
