@@ -92,7 +92,7 @@ class SnakeGame():
         self.move(action)
         self.snake.insert(0, self.head)
 
-        # GAME OVER CONDITION WHEN A COLLISION HAPPENS
+        # GAME OVER CONDITION WHEN A COLLISION HAPPENS OR WHEN TOO MANY MOVES HAVE BEEN MADE WITHOUT EATING FOOD
         reward = 0
         game_over = False
         if self.is_collision() or self.frame_iteration > (100 * len(self.snake)):
